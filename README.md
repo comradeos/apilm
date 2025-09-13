@@ -1,0 +1,1 @@
+A program that is trained on enormous amounts of text data to understand, generate, and process human language.
