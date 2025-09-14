@@ -1,5 +1,5 @@
 APP_NAME=apilm
-MODEL_NAME?=sshleifer/tiny-gpt2
+MODEL_NAME=TinyLlama/TinyLlama-1.1B-Chat-v1.0
 MODEL_DIR=./models
 
 .PHONY: build run stop logs clean restart model
@@ -18,10 +18,12 @@ logs:
 
 clean:
 	docker compose down -v --remove-orphans
-	-docker rmi $$(docker images -q $(APP_NAME)) || true
+	docker rmi $$(docker images -q $(APP_NAME)) || true
 
 restart: stop run
 
 model:
-	python -m pip show huggingface_hub >/dev/null 2>&1 || python -m pip install -U "huggingface_hub[cli]"
-	python -m huggingface_hub download $(MODEL_NAME) --local-dir $(MODEL_DIR)
+	@echo ">>> Installing huggingface_hub CLI if not installed"
+	python3 -m pip install -U "huggingface_hub[cli]" || python -m pip install -U "huggingface_hub[cli]"
+	@echo ">>> Downloading model $(MODEL_NAME) into $(MODEL_DIR)"
+	huggingface-cli download $(MODEL_NAME) --local-dir $(MODEL_DIR)
